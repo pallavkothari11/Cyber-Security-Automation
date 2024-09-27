@@ -31,7 +31,7 @@ echo "$disk_usage"
 Hname=$(hostname)
 
 # Slack webhook URL
-url="https://hooks.slack.com/services/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"
+url="Slack API String"
 
 # Construct the JSON payload
 json_payload=$(cat <<EOF
