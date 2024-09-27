@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Slack Webhook URL
-SLACK_WEBHOOK_URL="https://hooks.slack.com/services/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"
+SLACK_WEBHOOK_URL="Slack API String"
 
 # Date of monitoring
 DATE=$(date '+%Y-%m-%d %H:%M:%S')
