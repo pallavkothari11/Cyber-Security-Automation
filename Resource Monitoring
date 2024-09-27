@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# Get the current date and time using timedatectl
+datetime=$(timedatectl | grep "Local time" | awk '{print $4, $5}')
+
+# Print the current date and time
+echo "Current date and time: $datetime"
+
+# Extract used memory information from the output of free -h command
+used_memory=$(free -h | awk '/Mem:/ {print $3}')
+
+# Print used memory information
+echo "Used Memory: $used_memory"
+
+# Run top in batch mode for one iteration, filter CPU lines, extract CPU usage percentage, and remove decimal part
+cpu_usage=$(top -b -n 1 | grep '%Cpu' | awk '{print $2}' | cut -d '.' -f 1)
+
+# Print CPU usage
+echo "CPU Usage: $cpu_usage%"
+
+# Print column titles for disk space
+echo "Filesystem,Use%"
+
+# Run df -h command, filter the output to include only /dev/sd* filesystems, and output in CSV table format
+disk_usage=$(df -h | grep '/dev/sd*' | awk '{printf "%s,%s\n", $1, $5}')
+
+# Print disk usage
+echo "$disk_usage"
+
+#Hostname
+Hname=$(hostname)
+
+# Slack webhook URL
+url="https://hooks.slack.com/services/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"
+
+# Construct the JSON payload
+json_payload=$(cat <<EOF
+{
+  "text": "System Information:\n\n*Hostname:* $Hname\n*Current date and time:* $datetime\n*Used Memory:* $used_memory\n*CPU Usage:* $cpu_usage%\n*Disk Usage:*\n\`\`\`\nFilesystem,Use%\n$disk_usage\`\`\`"
+}
+EOF
+)
+
+# Send the data to Slack
+curl -X POST -H 'Content-type: application/json' --data "$json_payload" $url
